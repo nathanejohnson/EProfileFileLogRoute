@@ -82,6 +82,11 @@ class EProfileFileLogRoute extends CFileLogRoute {
                                 '{report}' => $value
                             ) ) );
     }
+
+    /**
+     * cribbed from http://anton.logvinenko.name/en/blog/microseconds-in-yii-framework-application-log.html
+     * @see CLogRoute::formatLogMessage()
+     */
     protected function formatLogMessage($message, $level, $category, $time) {
         $micro = sprintf( "%06d", ($time - floor( $time )) * 1000000 );
         $returnString = date( 'Y-m-d H:i:s', $time ) .
