@@ -1,5 +1,8 @@
-This is mostly a copy and paste of CProfileLogRoute, but instead of extending CWebRoute, it extends CFileLogRoute.  Logs time / date stamps with millisecond precision.
+#Yii extension for logging profiling data to a file.
 
+This is mostly a copy and paste of CProfileLogRoute, but instead of extending CWebRoute, it extends CFileLogRoute.
+
+Logs time / date stamps with millisecond precision.
 
 ##Requirements
 
