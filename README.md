@@ -15,6 +15,7 @@ or implicitly
     'import' => array('extensions.*')
 
 Here is an example configuration:
+
         'log' => array(
             'class' => 'CLogRouter',
             'routes' => array(
