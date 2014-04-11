@@ -143,6 +143,10 @@ class EProfileFileLogRoute extends CFileLogRoute {
      *
      * @param array $logs
      *            list of logs
+
+     * @return array
+     *             call stack information, 2d array
+     *             (token, time, callcount, category)
      */
     protected function createCallstack($logs) {
         $stack = array ();
@@ -196,6 +200,9 @@ class EProfileFileLogRoute extends CFileLogRoute {
      *
      * @param array $logs
      *            list of logs
+     * @return array
+     *            profiling information, 2d array
+     *            (token, callcount, min, max, total and category)
      */
     protected function createSummary($logs) {
         $stack = array ();
