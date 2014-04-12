@@ -127,7 +127,7 @@ class EProfileFileLogRoute extends CFileLogRoute {
             $processedEntries = $this->createCallstack( $logs );
             foreach ( $processedEntries as $entry ) {
                 list ( $token, $time, $depth, $category ) = $entry;
-                $spaces = str_repeat( '&nbsp;', $depth * 4 );
+                $spaces = str_repeat( ' ', $depth * 4 );
                 $message = sprintf( '%s%s was called and took %.5f seconds',
                         $spaces, $token, $time );
                 $level = CLogger::LEVEL_PROFILE;
