@@ -1,0 +1,7 @@
+*.gz
+.DS_Store
+._*
+.buildpath
+.project
+.*.swp
+*~
