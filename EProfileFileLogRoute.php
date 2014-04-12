@@ -24,7 +24,8 @@
  * their calling sequence.</li>
  * </ul>
  *
- * This class was mostly copied and pasted from the CProfileLogRoute and modified to
+ * This class was mostly copied and pasted from the CProfileLogRoute and
+ * modified to
  * extend CFileLogRoute instead of CWebRoute.
  *
  * @property string $report The type of the profiling report to display.
@@ -78,13 +79,15 @@ class EProfileFileLogRoute extends CFileLogRoute {
             throw new CException(
                     Yii::t( 'yii',
                             'EProfileFileLogRoute.report "{report}" is invalid. Valid values include "summary" and "callstack".',
-                            array (
+                            array(
                                 '{report}' => $value
                             ) ) );
     }
 
     /**
-     * cribbed from http://anton.logvinenko.name/en/blog/microseconds-in-yii-framework-application-log.html
+     * cribbed from
+     * http://anton.logvinenko.name/en/blog/microseconds-in-yii-framework-application-log.html
+     *
      * @see CLogRoute::formatLogMessage()
      */
     protected function formatLogMessage($message, $level, $category, $time) {
@@ -102,20 +105,20 @@ class EProfileFileLogRoute extends CFileLogRoute {
      */
     public function processLogs($logs) {
         $app = Yii::app();
-        $newLogs = array ();
+        $newLogs = array();
 
         if ($this->getReport() === 'summary') {
             $processedEntries = $this->createSummary( $logs );
 
             foreach ( $processedEntries as $entry ) {
-                list ( $token, $calls, $min, $max, $total, $category ) = $entry;
+                list( $token, $calls, $min, $max, $total, $category ) = $entry;
                 $message = sprintf(
                         '%s was called %d times.  min execution time was %0.5f.  max time was %0.5f.  total time spent was %0.5f',
                         $token, $calls, $min, $max, $total );
                 $level = CLogger::LEVEL_PROFILE;
 
                 $time = microtime( true );
-                $newLogs[] = array (
+                $newLogs[] = array(
                     $message,
                     $level,
                     $category,
@@ -126,13 +129,13 @@ class EProfileFileLogRoute extends CFileLogRoute {
         else {
             $processedEntries = $this->createCallstack( $logs );
             foreach ( $processedEntries as $entry ) {
-                list ( $token, $time, $depth, $category ) = $entry;
+                list( $token, $time, $depth, $category ) = $entry;
                 $spaces = str_repeat( ' ', $depth * 4 );
                 $message = sprintf( '%s%s was called and took %.5f seconds',
                         $spaces, $token, $time );
                 $level = CLogger::LEVEL_PROFILE;
                 $now = microtime( true );
-                $newLogs[] = array (
+                $newLogs[] = array(
                     $message,
                     $level,
                     $category,
@@ -148,14 +151,13 @@ class EProfileFileLogRoute extends CFileLogRoute {
      *
      * @param array $logs
      *            list of logs
-
-     * @return array
-     *             call stack information, 2d array
-     *             (token, time, callcount, category)
+     *
+     * @return array call stack information, 2d array
+     *         (token, time, callcount, category)
      */
     protected function createCallstack($logs) {
-        $stack = array ();
-        $results = array ();
+        $stack = array();
+        $results = array();
         $n = 0;
         foreach ( $logs as $log ) {
             if ($log[1] !== CLogger::LEVEL_PROFILE)
@@ -171,7 +173,7 @@ class EProfileFileLogRoute extends CFileLogRoute {
                 $token = substr( $message, 4 );
                 if (($last = array_pop( $stack )) !== null && $last[0] === $token) {
                     $delta = $log[3] - $last[3];
-                    $results[$last[4]] = array (
+                    $results[$last[4]] = array(
                         $token,
                         $delta,
                         count( $stack ),
@@ -182,7 +184,7 @@ class EProfileFileLogRoute extends CFileLogRoute {
                     throw new CException(
                             Yii::t( 'yii',
                                     'EProfileFileLogRoute found a mismatching code block "{token}". Make sure the calls to Yii::beginProfile() and Yii::endProfile() be properly nested.',
-                                    array (
+                                    array(
                                         '{token}' => $token
                                     ) ) );
             }
@@ -190,7 +192,7 @@ class EProfileFileLogRoute extends CFileLogRoute {
         // remaining entries should be closed here
         $now = microtime( true );
         while ( ($last = array_pop( $stack )) !== null )
-            $results[$last[4]] = array (
+            $results[$last[4]] = array(
                 $last[0],
                 $now - $last[3],
                 count( $stack ),
@@ -205,12 +207,11 @@ class EProfileFileLogRoute extends CFileLogRoute {
      *
      * @param array $logs
      *            list of logs
-     * @return array
-     *            profiling information, 2d array
-     *            (token, callcount, min, max, total and category)
+     * @return array profiling information, 2d array
+     *         (token, callcount, min, max, total and category)
      */
     protected function createSummary($logs) {
-        $stack = array ();
+        $stack = array();
         foreach ( $logs as $log ) {
             if ($log[1] !== CLogger::LEVEL_PROFILE)
                 continue;
@@ -229,7 +230,7 @@ class EProfileFileLogRoute extends CFileLogRoute {
                         $results[$token] = $this->aggregateResult(
                                 $results[$token], $delta );
                     else
-                        $results[$token] = array (
+                        $results[$token] = array(
                             $token,
                             1,
                             $delta,
@@ -242,7 +243,7 @@ class EProfileFileLogRoute extends CFileLogRoute {
                     throw new CException(
                             Yii::t( 'yii',
                                     'EProfileFileLogRoute found a mismatching code block "{token}". Make sure the calls to Yii::beginProfile() and Yii::endProfile() be properly nested.',
-                                    array (
+                                    array(
                                         '{token}' => $token
                                     ) ) );
             }
@@ -256,7 +257,7 @@ class EProfileFileLogRoute extends CFileLogRoute {
                 $results[$token] = $this->aggregateResult( $results[$token],
                         $delta );
             else
-                $results[$token] = array (
+                $results[$token] = array(
                     $token,
                     1,
                     $delta,
@@ -283,19 +284,20 @@ class EProfileFileLogRoute extends CFileLogRoute {
      * @return array
      */
     protected function aggregateResult($result, $delta) {
-        list ( $token, $calls, $min, $max, $total, $category ) = $result;
+        list( $token, $calls, $min, $max, $total, $category ) = $result;
         if ($delta < $min)
             $min = $delta;
         elseif ($delta > $max)
             $max = $delta;
         $calls ++;
         $total += $delta;
-        return array (
+        return array(
             $token,
             $calls,
             $min,
             $max,
-            $total
+            $total,
+            $category
         );
     }
 }
